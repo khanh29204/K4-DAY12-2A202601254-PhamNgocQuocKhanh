@@ -15,17 +15,21 @@ from __future__ import annotations
 
 import secrets
 
-from fastapi import Header, HTTPException, status
+from fastapi import Depends, Header, HTTPException, status
+from fastapi.security import HTTPBearer
 
 from .config import get_settings
 
 ANONYMOUS_CLIENT = "anonymous"
 SCHEME = "Bearer"
 
+security_scheme = HTTPBearer(auto_error=False)
+
 
 def verify_bearer_token(
     authorization: str | None = Header(default=None),
     x_client_id: str | None = Header(default=None),
+    _credentials: object | None = Depends(security_scheme),
 ) -> str:
     """Kiểm tra header ``Authorization``; trả về client_id nếu hợp lệ.
 
