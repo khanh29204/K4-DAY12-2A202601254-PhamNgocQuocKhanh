@@ -12,10 +12,13 @@ name: CI/CD
 on:
   push:
     branches: [main]
-  # Chạy cả trên pull_request là phần giá trị nhất: lỗi bị bắt TRƯỚC khi vào
-  # nhánh chính, không phải sau.
-  pull_request:
-    branches: [main]
+    paths:
+      - "app/**"
+      - "utils/**"
+      - "Dockerfile"
+      - "requirements.txt"
+      - "docker-compose.yml"
+      - ".github/workflows/**"
 
 env:
   REGISTRY: ghcr.io
@@ -114,7 +117,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
             cd ~/labs/day12
