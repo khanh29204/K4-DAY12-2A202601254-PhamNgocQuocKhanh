@@ -97,7 +97,7 @@ class TestDeploymentDoc:
         lowered = deployment_text.lower()
         assert any(
             name in lowered
-            for name in ("railway", "render", "cloud run", "fly.io", "koyeb")
+            for name in ("railway", "render", "cloud run", "fly.io", "koyeb", "vps")
         ), "DEPLOYMENT.md phải ghi rõ deploy trên platform nào"
 
     def test_liet_ke_bien_moi_truong(self, deployment_text):

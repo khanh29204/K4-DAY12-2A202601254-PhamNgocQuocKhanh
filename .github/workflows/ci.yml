@@ -20,6 +20,16 @@ on:
       - "docker-compose.yml"
       - ".github/workflows/**"
 
+  pull_request:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "utils/**"
+      - "Dockerfile"
+      - "requirements.txt"
+      - "docker-compose.yml"
+      - ".github/workflows/**"
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}

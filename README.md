@@ -1,5 +1,7 @@
 # K4 — Ngày 12: Hạ Tầng Cloud & Deployment (14h00–18h00)
 
+[![CI/CD](https://github.com/khanh29204/K4-DAY12-2A202601254-PhamNgocQuocKhanh/actions/workflows/ci.yml/badge.svg)](https://github.com/khanh29204/K4-DAY12-2A202601254-PhamNgocQuocKhanh/actions/workflows/ci.yml)
+
 Đưa một chat service từ `localhost:8000` lên một địa chỉ công khai mà người khác
 gọi được, có bảo mật, có giới hạn chi phí, và không sập khi bạn deploy bản mới.
 
@@ -304,7 +306,7 @@ Nộp **link repository** lên codelab. Repo phải ở chế độ public.
 
 ## Danh Sách Kiểm Tra Trước Khi Nộp
 
-- [ ] Repo đúng tên `K4-DAY12-<MãHV>-<HọTên>`, viết liền không dấu
+- [x] Repo đúng tên `K4-DAY12-<MãHV>-<HọTên>`, viết liền không dấu
 - [ ] `pytest tests/ -v` — đã chạy và biết rõ test nào còn rớt, vì sao
 - [ ] `python grade.py` — xem điểm, mục tiêu ≥ 75/100
 - [ ] `exercises.md` — đủ 10 câu, viết bằng lời của mình

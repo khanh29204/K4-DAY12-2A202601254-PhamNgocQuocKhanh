@@ -1,0 +1,49 @@
+# ═══════════════════════════════════════════════════════════════════
+# CP2 — Single-stage Build (1 stage - dùng cho bài tập / so sánh)
+#
+# Build thử: docker build -f Dockerfile-1-state -t chat:single .
+#            docker images | grep chat
+# ═══════════════════════════════════════════════════════════════════
+
+FROM python:3.11-alpine
+
+# curl cho HEALTHCHECK. `--no-cache` để apk không giữ lại index gói trong image.
+RUN apk add --no-cache curl
+
+# Chạy bằng user thường: ai thoát được khỏi app cũng chỉ là `appuser`, không
+# phải root trên host.
+RUN adduser -D -h /home/appuser -u 10001 appuser
+
+WORKDIR /app
+
+# Không ghi .pyc; log ra stdout ngay không đệm — quan trọng khi log JSON được
+# orchestrator thu thập theo dòng.
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PORT=8000
+
+# COPY requirements.txt TRƯỚC source code: Docker cache theo layer, nên sửa
+# một dòng code không làm mất cache của bước cài thư viện.
+COPY requirements.txt .
+
+# Cài đặt dependency trực tiếp trong stage duy nhất
+RUN pip install --no-cache-dir -r requirements.txt
+
+# COPY source SAU pip install để giữ nguyên cache layer dependency
+COPY --chown=appuser:appuser app ./app
+COPY --chown=appuser:appuser utils ./utils
+
+USER appuser
+
+EXPOSE 8000
+
+# Docker tự gọi /healthz; container không còn phục vụ được sẽ bị đánh dấu
+# unhealthy để orchestrator thay thế.
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD curl -fsS "http://localhost:${PORT}/healthz" || exit 1
+
+# Đọc cổng từ biến môi trường PORT — cloud (Cloud Run, Railway, Render) tự gán
+# cổng lúc chạy, không cố định 8000. Cần shell để nội suy ${PORT}, nhưng phải
+# có `exec`: không có nó thì /bin/sh là PID 1 và SIGTERM dừng ở sh, uvicorn
+# không bao giờ nhận được tín hiệu → graceful shutdown ở CP4 vô hiệu.
+CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]
